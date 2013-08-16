@@ -45,19 +45,19 @@ class swift(
 
   file { '/home/swift':
     ensure  => directory,
-    mode    => 0700,
+    mode    => '0700',
   }
 
   file { '/etc/swift':
     ensure => directory,
-    mode   => 2770,
+    mode   => '2770',
   }
   user {'swift':
     ensure => present,
   }
   file { '/var/lib/swift':
     ensure => directory,
-    owner => 'swift'
+    owner  => 'swift'
   }
   file { '/var/run/swift':
     ensure => directory,
@@ -65,15 +65,8 @@ class swift(
 
   file { '/etc/swift/swift.conf':
     ensure  => present,
-    mode    => 0660,
+    mode    => '0660',
     content => template('swift/swift.conf.erb'),
-  }
-
-  file { '/var/cache/swift':
-    ensure => directory,
-    mode   => '0770',
-    owner  => 'root',
-    group  => 'swift',
   }
 
 }
