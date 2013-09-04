@@ -36,6 +36,10 @@ class swift(
     }
   }
 
+  group { "swift":
+    ensure => "present",
+  }  
+
   package { 'swiftclient':
     name   => $::swift::params::client_package,
     ensure => $package_ensure,
