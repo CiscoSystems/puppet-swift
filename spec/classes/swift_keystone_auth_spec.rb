@@ -40,6 +40,36 @@ describe 'swift::keystone::auth' do
       :admin_url    => 'http://127.0.0.1:8080',
       :internal_url => 'http://127.0.0.1:8080'
     ) }
+
+    ['admin', 'SwiftOperator'].each do |role_name|
+      it { should contain_keystone_role(role_name).with_ensure('present') }
+    end
+  end
+
+  describe 'overriding public_port public_protocol, admin_protocol and internal_protocol' do
+
+    let :params do
+      {
+        :port              => '443',
+        :public_protocol   => 'https',
+        :admin_protocol    => 'https',
+        :internal_protocol => 'https',
+      }
+    end
+
+    it { should contain_keystone_endpoint('RegionOne/swift').with(
+      :ensure       => 'present',
+      :public_url   => "https://127.0.0.1:443/v1/AUTH_%(tenant_id)s",
+      :admin_url    => "https://127.0.0.1:443/",
+      :internal_url => "https://127.0.0.1:443/v1/AUTH_%(tenant_id)s"
+    ) }
+
+    it { should contain_keystone_endpoint('RegionOne/swift_s3').with(
+      :ensure       => 'present',
+      :public_url   => 'https://127.0.0.1:443',
+      :admin_url    => 'https://127.0.0.1:443',
+      :internal_url => 'https://127.0.0.1:443'
+    ) }
   end
 
   describe 'when overriding public_port, public address, admin_address and internal_address' do
@@ -133,4 +163,17 @@ describe 'swift::keystone::auth' do
 
   end
 
+  describe 'when overriding operator_roles' do
+
+    let :params do
+      {
+        :operator_roles => 'foo',
+      }
+    end
+
+    it { should contain_keystone_role('foo').with(
+      :ensure       => 'present'
+    ) }
+
+  end
 end
